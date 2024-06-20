@@ -1,0 +1,46 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract VoterID {
+    // Mapping to store whether a user is eligible for a voter ID
+    mapping(address => bool) public isEligible;
+
+    // Mapping to store the age of users
+    mapping(address => uint) public age;
+
+    // Function to set the age of a user
+    function setAge(uint _age) public {
+        // Using require to ensure the age is a reasonable value
+        require(_age > 0 && _age < 150, "Invalid age provided.");
+
+        // Setting the age for the sender's address
+        age[msg.sender] = _age;
+    }
+
+    // Function to set eligibility for a voter ID
+    function setEligibility(bool _isEligible) public {
+        // Setting the eligibility status for the sender's address
+        isEligible[msg.sender] = _isEligible;
+    }
+
+    // Function to check eligibility for a voter ID card
+    function checkEligibility() public view returns (bool) {
+        uint userAge = age[msg.sender];
+        bool eligible = isEligible[msg.sender];
+
+        // Using require to ensure the age is set
+        require(userAge > 0, "Age is not set. Please set your age first.");
+
+        // Check if the user is eligible for a voter ID card
+        if (userAge < 18) {
+            // Using revert to indicate the user is not eligible
+            revert("You are  eligible for a voter ID card.");
+        }
+
+        // Ensure the user is marked eligible
+        require(eligible, "You are eligible for a voter ID card.");
+
+        // Returning the eligibility status in boolean form
+        return true;
+    }
+}
